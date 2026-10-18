@@ -1,10 +1,12 @@
 {
-   "video_id":"K1priHbQxP8",
+   "bvid":"BV1b3411i7XN",
+   "page_url":"https://www.bilibili.com/video/BV1b3411i7XN",
+   "duration":228,
    "Sections":[
-  {"section_names":"First", "Start Time":10, "End Time":64},
-  {"section_names":"Second", "Start Time":58, "End Time":108},
-  {"section_names":"Third", "Start Time":103, "End Time":150},
-  {"section_names":"Fourth", "Start Time":145, "End Time":202} ],
+  {"section_names":"第一段", "Start Time":0, "End Time":57},
+  {"section_names":"第二段", "Start Time":57, "End Time":114},
+  {"section_names":"第三段", "Start Time":114, "End Time":171},
+  {"section_names":"第四段", "Start Time":171, "End Time":228} ],
   "height":727,
   "width":"100%"
 }

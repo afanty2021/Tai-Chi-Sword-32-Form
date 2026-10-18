@@ -1,96 +1,58 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <!-- head definitions go here -->
+        <meta charset="utf-8">
     </head>
-	<h1 id="Heading">First Section</h1>
+	<h1 id="Heading">第一段</h1>
     <body>
         <!--Interface-->
-		<button id="1" onclick="myFunction(this.id)">First Section</button>
-		<button id="2" onclick="myFunction(this.id)">Second Section</button>
-		<button id="3" onclick="myFunction(this.id)">Third Section</button>
-		<button id="4" onclick="myFunction(this.id)">Forth Section</button>
-	
+		<button id="1" onclick="jumpToSection(this.id)">第一段</button>
+		<button id="2" onclick="jumpToSection(this.id)">第二段</button>
+		<button id="3" onclick="jumpToSection(this.id)">第三段</button>
+		<button id="4" onclick="jumpToSection(this.id)">第四段</button>
+
         <!--Video-->
 		<div id="myvideo"></div>
-		<script async src="https://www.youtube.com/iframe_api"></script>
-		<script>		
+		<script>
         //###Variables###
 		var state = 1;
+		var bvid = 'BV1b3411i7XN'; // 32式太极剑全套背向演示（B站，228秒）
 
-        //Sections: section_names, Start Time, End Time 
+        //Sections: section_names, Start Time (秒), End Time (秒)。全片无章节提示，四段为均分，可在 config.json 对照调整
         text = '{ "Sections":[' +
-              '{"section_names":"First", "Start Time":10, "End Time":14},' + //64
-              '{"section_names":"Second", "Start Time":58, "End Time":108},' +
-              '{"section_names":"Third", "Start Time":103, "End Time":150},' +
-              '{"section_names":"Fourth", "Start Time":145, "End Time":202} ] }';
+              '{"section_names":"第一段", "Start Time":0, "End Time":57},' +
+              '{"section_names":"第二段", "Start Time":57, "End Time":114},' +
+              '{"section_names":"第三段", "Start Time":114, "End Time":171},' +
+              '{"section_names":"第四段", "Start Time":171, "End Time":228} ] }';
         obj = JSON.parse(text);
-        console.log("START test");
-        console.log(obj["Sections"][3]["section_names"]);
 
-		//Call as function on load
-		var player;
-		var videoId='K1priHbQxP8';
-		var startSecondsT = obj["Sections"][state-1]["Start Time"] // set your own video start time when loop play
-		var endSecondsT = obj["Sections"][state-1]["End Time"]    // set your own video end time when loop play
-		var playerConfig = {
-		  height: '727',
-		  width: '100%',
-		  videoId: videoId,
-		  playerVars: {
+		var playerHost = document.getElementById('myvideo');
 
-			autoplay: 1,            // Auto-play the video on load
-			controls: 1,            // Show pause/play buttons in player
-			showinfo: 0,            // Hide the video title
-			modestbranding: 1,      // Hide the Youtube Logo
-			fs: 1,                  // Hide the full screen button
-			cc_load_policy: 0,      // Hide closed captions
-			iv_load_policy: 3,      // Hide the Video Annotations
-			start: obj["Sections"][state-1]["Start Time"],
-			end: obj["Sections"][state-1]["End Time"],
-			autohide: 0, // Hide video controls when playing
-		  },
-		  events: {
-			   'onStateChange': onStateChange,       // reference to Iframe API
-				onReady: function(e) {              // mute the video when loaded
-				//e.target.mute(); 
-			  }
-			}
-		};
-		//excute the video in div
-		function onYouTubePlayerAPIReady() {
-		  player = new YT.Player('myvideo', playerConfig);
+		//B站外链播放器不支持跨域JS控制（无法像YouTube API那样段内自动循环），
+		//改为：点分段按钮 → 从该段起始时间重新加载播放器并自动播放
+		function loadPlayer(startTime, autoplay) {
+		  var src = 'https://player.bilibili.com/player.html?bvid=' + bvid +
+		            '&high_quality=1&danmaku=0&autoplay=' + autoplay + '&t=' + startTime;
+		  playerHost.innerHTML = '<iframe src="' + src + '" scrolling="no" border="0" ' +
+		    'frameborder="no" framespacing="0" allowfullscreen="true" ' +
+		    'style="width:100%;height:727px;"></iframe>';
 		}
-		
-		//repload the video when onStateChange=YT.PlayerState.ENDED)
-		function onStateChange(state) {
-		  if (state.data === YT.PlayerState.ENDED) {
-			player.loadVideoById({
-			  videoId: videoId,
-			  startSeconds: startSecondsT, 
-			  endSeconds: endSecondsT 
-			});
-          // if the button id is different from last
-            //then loadVideoById() 
-		  }
-		}
-		</script>
 
-		<script>
+		loadPlayer(obj["Sections"][state-1]["Start Time"], 0);
+
 		// Button functions
-		function myFunction(clicked_id) {
-          state = clicked_id
-          document.getElementById("Heading").innerHTML = obj["Sections"][state-1]["section_names"] + " Section";		  
-		  
-		  startSecondsT = obj["Sections"][state-1]["Start Time"];//50;  // set your own video start time when loop play
-		  endSecondsT = obj["Sections"][state-1]["End Time"];//80;   // set your own video end time when loop play
-		  //$("#myvideo").load(" #myvideo > *"); //refresh page? <script src="https://code.jquery.com/jquery-3.5.1.js">
-        }
+		function jumpToSection(clicked_id) {
+		  state = clicked_id;
+		  var s = obj["Sections"][state-1];
+		  document.getElementById("Heading").innerHTML = s["section_names"];
+		  loadPlayer(s["Start Time"], 1);
+		}
 		</script>
 
         <!--Link at bottom-->
-		<p><br><a href="http://www.egreenway.com/taichichuan/sword32.htm#Part1">Movement breakdown</a></p>
-		
+		<p><br><a href="http://www.egreenway.com/taichichuan/sword32.htm#Part1">Movement breakdown (英文动作分解)</a></p>
+		<p><a href="https://www.bilibili.com/video/BV1h34y1r7WE">李德印教学·刘志华演示：32式太极剑分解动作（B站）</a></p>
+		<p><a href="https://www.bilibili.com/video/BV1YBSYBgEJk">三十二式太极剑背向演练·带口令（B站）</a></p>
+
     </body>
 </html>
-
